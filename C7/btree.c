@@ -1,5 +1,5 @@
-#include<stdio.h>
 #include<stdlib.h>
+#include<stdio.h>
 #define MAXLINE 1000
 typedef struct node{
   char ch;
@@ -39,37 +39,35 @@ node *str2tree(char s[]){
   }
   return root;
 }
-node *merge_tree(node *t1,node *t2){
-  if (t1==NULL)
-    return t2;
-  if (t2==NULL)
-    return t1;
-  node *p=t1;
-  while (p->r)
-    p=p->r;
-  p->r=t2;
-  return t1;
+node *find_node(node *tree,char x){
+  if (!tree || tree->ch==x)
+    return tree;
+  node  *ans;
+  if (ans=find_node(tree->l,x))
+    return ans;
+  if (ans=find_node(tree->r,x))
+    return ans;
+  return NULL;
 }
-void print(node *p){
+void print_tree(node *p){
   if (p){
     printf("%c",p->ch);
     if (p->l||p->r){
       printf("(");
       if (p->l)
-        print(p->l);
+        print_tree(p->l);
       if (p->r){
         printf(",");
-        print(p->r);
+        print_tree(p->r);
       }
       printf(")");
     }
   }
 }
-int main(int argc,char **argv){
-  node *btree=NULL;
-  for (int i=1;i<argc;i++){
-    btree=merge_tree(btree,str2tree(argv[i]));
-  }
-  print(btree);
-  return 0;
+int tree_depth(node *t){
+  if (!t)
+    return 0;
+  int d1=tree_depth(t->l);
+  int d2=tree_depth(t->r);
+  return d1>d2?d1+1:d2+1;
 }
