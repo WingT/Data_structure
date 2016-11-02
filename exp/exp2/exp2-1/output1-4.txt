@@ -1,0 +1,7 @@
+enter the number of polys:
+enter the degree of poly 1:
+enter the coefficients of poly 1:
+enter the degree of poly 2:
+enter the coefficients of poly 2:
+answer:
+2

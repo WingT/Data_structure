@@ -1,2 +1,0 @@
-break /home/wing/work/Data_structure/C7/postorder_norec-2.c:31
-

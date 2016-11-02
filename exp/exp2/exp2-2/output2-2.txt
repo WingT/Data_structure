@@ -1,0 +1,6 @@
+enter the number of polys:
+enter the number of items of poly 1:
+enter p & e:
+enter the number of items of poly 2:
+enter p & e:
+answer: 0

@@ -1,0 +1,9 @@
+enter the number of polys:
+enter the degree of poly 1:
+enter the coefficients of poly 1:
+enter the degree of poly 2:
+enter the coefficients of poly 2:
+enter the degree of poly 3:
+enter the coefficients of poly 3:
+answer:
+5x+5x^3+x^4

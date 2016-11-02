@@ -9,7 +9,7 @@ char *help_msg="1:find-ISBN ISBN查找ISBN号\n2:find-title title查找书名\n3
 typedef struct book_t{
   char ISBN[14];
   char title[MAXTITLE];
-  double price;
+  int price;
   struct book_t*next;
 }book_t;
 typedef struct lib_t{
@@ -66,7 +66,7 @@ void init_lib(lib_t *lib){
       continue;
     }
     if (!strcmp(property,"price"))
-      new_book->price=atof(value);
+      new_book->price=atoi(value);
   }
   fclose(fin);
 }
@@ -105,7 +105,7 @@ void print_book(book_t *book,FILE *fout){
   fprintf(fout,"{\n");
   fprintf(fout,"ISBN:%s\n",book->ISBN);
   fprintf(fout,"title:%s\n",book->title);
-  fprintf(fout,"price:%lf\n",book->price);
+  fprintf(fout,"price:%d\n",book->price);
   fprintf(fout,"}\n");
 }
 void print_lib(lib_t lib){
@@ -151,7 +151,7 @@ book_t *find_by_index(lib_t *lib,int index){
 }
 void swap(book_t *a,book_t *b){
   char buf[MAXTITLE];
-  double tmp;
+  int tmp;
   strcpy(buf,a->ISBN);
   strcpy(a->ISBN,b->ISBN);
   strcpy(b->ISBN,buf);
@@ -243,7 +243,7 @@ void eval(char *cmd){
     new_book->title[strlen(new_book->title)-1]=0;
     printf("price:");
     fgets(buf,MAXTITLE,stdin);
-    new_book->price=atof(buf);
+    new_book->price=atoi(buf);
     int index;
     book_t *old_book=find_by_ISBN(&lib,new_book->ISBN,&index);
     if (old_book){
@@ -316,7 +316,7 @@ void eval(char *cmd){
     fgets(book->title,MAXTITLE,stdin);
     book->title[strlen(book->title)-1]=0;
     printf("price:");
-    scanf("%lf",&book->price);
+    scanf("%d",&book->price);
     store_lib(&lib);
     printf("book updated!\n");
   }

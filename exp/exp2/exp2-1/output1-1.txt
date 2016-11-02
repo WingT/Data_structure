@@ -1,0 +1,3 @@
+enter the number of polys:
+answer:
+0
