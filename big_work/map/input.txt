@@ -1,0 +1,45 @@
+5
+ziqiang
+students' supermarket
+0.3
+jiao3
+teaching building
+0.4
+jiao2
+teaching building
+0.2
+main-lib
+library
+0.2
+museum
+art museum
+0.4
+7
+0
+2
+1
+road1
+0
+4
+2
+road2
+0
+4
+3
+road3
+2
+4
+1
+road4
+3
+4
+3
+road5
+1
+4
+5
+road6
+0
+4
+7
+road7

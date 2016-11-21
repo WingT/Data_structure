@@ -12,7 +12,7 @@ int pri(char c){
   case '(':return 0;
   }
 }
-void infix2suffix(char *infix,char *suffix){
+void infix2suffix(char *infix,char *suffix){//将表达式转化为后缀表达式保存在suffix_exp中
   char s1[MAXLINE];
   int t1=-1,t2=-1;
   int i=0;
@@ -21,29 +21,29 @@ void infix2suffix(char *infix,char *suffix){
       while (infix[i] && infix[i]>='0' && infix[i]<='9')
         suffix[++t2]=infix[i++];
       suffix[++t2]='#';
-    }
+    }//数字直接输出到suffix中，并在数字结尾处加上'#'
     else{
       switch (infix[i]){
-      case '(':s1[++t1]='(';break;
+      case '(':s1[++t1]='(';break;//'('直接入栈
       case ')':{
         while (s1[t1]!='(')
           suffix[++t2]=s1[t1--];
-        t1--;
+        t1--;//将最近的‘(’之前的操作符出栈
       }break;
       default:{
         if (t1>=0 && pri(infix[i])<=pri(s1[t1]))
           suffix[++t2]=s1[t1--];
         s1[++t1]=infix[i];
-      }
+      }//如果是运算符，则需要比较优先级决定是否出栈之前的运算符，再将此操作符如栈
       }
       i++;
     }
   }
   while (t1>=0)
     suffix[++t2]=s1[t1--];
-  suffix[++t2]=0;
+  suffix[++t2]=0;//栈中可能还有操作符
 }
-int eval_suffix(char suffix[]){
+int eval_suffix(char suffix[]){//求值后缀表达式
   int i=0;
   int st[MAXLINE],top=-1;
   while (suffix[i]){
@@ -68,11 +68,11 @@ int eval_suffix(char suffix[]){
   return st[0];
 }
 void eval(char buf[]){
-  if (buf[0]==0 || !strcmp(buf,"h")){
+  if (buf[0]==0 || !strcmp(buf,"h")){//显示帮助信息
     printf("%s",helpmsg);
     return;
   }
-  if (!strcmp(buf,"q"))
+  if (!strcmp(buf,"q"))//退出
     exit(0);
   else {
     char suffix_exp[MAXLINE];
@@ -96,7 +96,7 @@ int main(void){
   while (1){
     printf(">");
     fgets(buf,MAXLINE,stdin);
-    reg(buf);
-    eval(buf);
+    reg(buf);//将输入的字符串转化为没有空白字符的连续形式
+    eval(buf);//根据用户的输入执行相应的操作
   }
 }
