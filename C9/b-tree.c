@@ -100,6 +100,8 @@ int bm_insert(node_t **t,int key){
 				pt->c[i-1]=tmp_c[i-1];
 			}
 			pt->c[min]=tmp_c[min];
+                        if (newc)
+                          newc->p=pt;
 			newc=new_node();
 			newc->n=m-min-1;
 			for (int i=1;i<=newc->n;i++){
@@ -152,7 +154,7 @@ int bm_delete(node_t **t,int key){
 	}
 	node_t *p=pt->p;
 	if (p==NULL){
-		if (p->n==1){
+		if (pt->n==1){
 			free(pt);
 			*t=NULL;
 			return 1;
