@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 from Tkinter import *
 import tkMessageBox
 import random
@@ -21,11 +21,12 @@ start_selected=-1
 end_selected=-1
 show_completed=False
 class Edge:
-	def __init__(self,u,v,leng,intro):
+	def __init__(self,u,v,leng,intro,num):
 		self.u=u
 		self.v=v
 		self.leng=leng
 		self.intro=intro
+		self.num=num
 
 class Node:
 	def __init__(self,name,intro,vex,freq):
@@ -93,6 +94,8 @@ class Graph:
 			self.edges[v][u]=w
 			graph.min_edge[u][v]=self.e
 			graph.min_edge[v][u]=self.e
+		graph.node[u].edges.append(edge)
+		graph.node[v].edges.append(edge)
 		self.e+=1
 		self.floyd()
 
@@ -113,7 +116,7 @@ def init():
 		v=input()
 		w=input()
 		intro=raw_input()
-		new_edge=Edge(u,v,w,intro)
+		new_edge=Edge(u,v,w,intro,i)
 		graph.edges_list.append(new_edge)
 		graph.node[u].edges.append(new_edge)
 		graph.node[v].edges.append(new_edge)
@@ -197,6 +200,8 @@ class Ui():
 		c.tag_lower(edge_tag)
 		c.tag_bind(edge_tag,"<1>",edge_click_handler)
 		c.tag_bind(node_tag,"<1>",node_click_handler)
+		c.tag_bind(node_tag,"<B1-Motion>",node_motion_handler)
+		c.tag_bind(node_tag,"<ButtonRelease-1>",node_release_handler)
 	
 	def add_dis_node(self,node):
 		def canvas_click_handler(event):
@@ -215,6 +220,42 @@ class Ui():
 		self.dis_edge.append(Dis_edge(c,edge,self.edge_count[edge.u][edge.v]))
 		c.tag_lower(edge_tag)
 
+def node_release_handler(event):
+	c.config(cursor="arrow")
+
+item_moving=-1
+
+def node_motion_handler(event):
+	ui.dis_node[item_moving].x=event.x
+	ui.dis_node[item_moving].y=event.y
+	c.config(cursor="fleur")
+	c.coords(ui.dis_node[item_moving].oval,(event.x-node_r,event.y-node_r,event.x+node_r,event.y+node_r))
+	c.coords(ui.dis_node[item_moving].text,(event.x,event.y))
+	edge_count=[[0 for col in range(graph.n)] for row in range(graph.n)]
+	for edge in graph.node[item_moving].edges:
+		edge_count[edge.u][edge.v]+=1
+		i=edge_count[edge.u][edge.v]
+		if i % 2==0:
+			ratio=edge_disp_ratio
+		else:
+			ratio=-edge_disp_ratio
+		x1=ui.dis_node[edge.u].x
+		y1=ui.dis_node[edge.u].y
+		x2=ui.dis_node[edge.v].x
+		y2=ui.dis_node[edge.v].y
+		if y2==y1:
+			x3=(x1+x2)/2.0
+			y3=y1+abs(x1-x2)*ratio*(i/2)
+		else:
+			leng=((x1-x2)**2 + (y1-y2)**2)**0.5
+			k=(x1-x2)/(y2-y1+0.0)
+			x3=(x1+x2)/2.0 - (1/((1+ k**2)**0.5))*leng*ratio*(i / 2)
+			y3=(y1+y2)/2.0 - (k/(1+k**2)**0.5)*leng*ratio*(i/2)
+			x3=round(x3)
+			y3=round(y3)
+		c.coords(ui.dis_edge[edge.num].line,(x1,y1,x3,y3,x2,y2))
+
+
 def edge_click_handler(event):
 	item=c.find_closest(event.x,event.y)[0]
 	for i in range(graph.e):
@@ -226,10 +267,12 @@ def edge_click_handler(event):
 	info_text.insert(2.0,"Length:%d"%edge.leng)
 	
 def node_click_handler(event):
+	global item_moving
 	item=c.find_closest(event.x,event.y)[0]
 	for i in range(graph.n):
 		if ui.dis_node[i].oval==item:
 			break
+	item_moving=i
 	node=graph.node[i]
 	info_text.delete(1.0,END)
 	info_text.insert(2.0,"ID:%d\n"%node.vex)
@@ -344,20 +387,18 @@ def add_node_cmd():
 def add_edge_cmd():
 	def ok_button_cmd():
 		intro=intro_entry.get()
-		#try:
-		leng=string.atoi(leng_entry.get())
-		u=string.atoi(u_entry.get())
-		v=string.atoi(v_entry.get())
-		top.destroy()
-		if u<graph.n and v<graph.n and u>=0 and v>=0:
-			new_edge=Edge(u,v,leng,intro)
-			graph.add_edge(new_edge)
-			ui.add_dis_edge(new_edge)
-		else:
-			tkMessageBox.showerror("input error","input outside of range!")
-
-
-		#except Exception,e:
+		try:
+			leng=string.atoi(leng_entry.get())
+			u=string.atoi(u_entry.get())
+			v=string.atoi(v_entry.get())
+			top.destroy()
+			if u<graph.n and v<graph.n and u>=0 and v>=0:
+				new_edge=Edge(u,v,leng,intro,graph.e)
+				graph.add_edge(new_edge)
+				ui.add_dis_edge(new_edge)
+			else:
+				tkMessageBox.showerror("input error","input outside of range!")
+		except Exception,e:
 			tkMessageBox.showerror("input error","please input right u,v & leng!")
 	def cancel_button_cmd():
 		top.destroy()
