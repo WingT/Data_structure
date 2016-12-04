@@ -20,7 +20,7 @@ typedef struct level_t{
 }level_t;
 level_t *paper=NULL;
 char filename[MAXLINE];
-prob_t *new_prob(void){
+prob_t *new_prob(void){//问题
   prob_t *p=(prob_t *)malloc(sizeof(prob_t));
   p->q[0]=0;
   p->a[0]=0;
@@ -29,7 +29,7 @@ prob_t *new_prob(void){
   p->score=0;
   return p;
 }
-level_t *new_level(void){
+level_t *new_level(void){//难度等级，一个等级可以有多个问题
   level_t *p=(level_t *)malloc(sizeof(level_t));
   p->level=0;
   p->head=p->tail=p->now=NULL;
@@ -37,7 +37,7 @@ level_t *new_level(void){
   p->p=p->l=p->r=NULL;
   return p;
 }
-level_t *find_level(int l){
+level_t *find_level(int l){//查找难度等级为l的节点
   level_t *p=paper;
   while (p && p->level!=l){
     if (l<p->level)
@@ -47,7 +47,7 @@ level_t *find_level(int l){
   }
   return p;
 }
-void insert_level(level_t *nl){
+void insert_level(level_t *nl){//插入难度等级为nl的节点
   level_t *p=paper,*pre=NULL;
   while (p && p->level!=nl->level){
     pre=p;
@@ -66,7 +66,7 @@ void insert_level(level_t *nl){
   else
     paper=nl;
 }
-void insert_p(level_t *l,prob_t *np){
+void insert_p(level_t *l,prob_t *np){//在难度等级为l的节点中插入问题np
   if (l->tail){
     l->tail->next=np;
     l->tail=np;
@@ -77,7 +77,7 @@ void insert_p(level_t *l,prob_t *np){
     l->head=l->tail=l->now=np;
   l->n++;
 }
-void load(char *filein){
+void load(char *filein){//加载试卷
   FILE *fin=fopen(filein,"r");
   strcpy(filename,filein);
   if (fin==NULL){
@@ -113,7 +113,7 @@ void load(char *filein){
   fclose(fin);
   printf("load paper successfully!\n");
 }
-level_t *predecessor(level_t *l){
+level_t *predecessor(level_t *l){//找到节点前驱
   if (l->l){
     level_t *tmp=l->l;
     while (tmp->r)
@@ -128,7 +128,7 @@ level_t *predecessor(level_t *l){
     return tmp;
   }
 }
-level_t *easier(level_t *l){
+level_t *easier(level_t *l){//找到比当前简单并且没有做过的题目
   level_t *p=l;
   p=predecessor(l);
   while (p!=NULL && p->now==NULL)
@@ -141,7 +141,7 @@ level_t *easier(level_t *l){
     else
       return l;
 }
-level_t *successor(level_t *l){
+level_t *successor(level_t *l){//找当前节点的后继
   if (l->r){
     level_t *tmp=l->r;
     while (tmp->l)
@@ -156,7 +156,7 @@ level_t *successor(level_t *l){
     return tmp;
   }
 }
-level_t *moredifficult(level_t *l){
+level_t *moredifficult(level_t *l){//找到比当前困难且没有做过的题目
   level_t *p=l;
   p=successor(l);
   while (p!=NULL && p->now==NULL)
@@ -169,7 +169,7 @@ level_t *moredifficult(level_t *l){
     else
       return l;
 }
-void summarize(void){
+void summarize(void){//总结
   char fileout[MAXLINE];
   strcpy(fileout,filename);
   strcat(fileout,".sum.txt");
@@ -191,7 +191,7 @@ void summarize(void){
   printf("the result has been stored in %s!\n",fileout);
   return;
 }
-void test(void){
+void test(void){//测试
   level_t *level_now=paper,*pre=NULL,*suc=NULL;
   char ans[MAXALEN];
   printf("type :q to exit!\n");
@@ -251,7 +251,7 @@ void test(void){
     }
   }
 }
-void delete_level(level_t **pl){
+void delete_level(level_t **pl){//删除节点
   level_t *pt=*pl;
   if (pt==NULL)
     return;
@@ -266,10 +266,10 @@ void delete_level(level_t **pl){
   free(pt);
   *pl=NULL;
 }
-void reload(void){
+void reload(void){//删除已经加载的试卷
   delete_level(&paper);
 }
-void parse(char *cmd,int *argc,char *argv[]){
+void parse(char *cmd,int *argc,char *argv[]){//分析命令行输入
   int new_arg=1,count=0,i;
   cmd[strlen(cmd)-1]=0;
   for (i=0;cmd[i];i++)
@@ -286,7 +286,7 @@ void parse(char *cmd,int *argc,char *argv[]){
   *argc=count;
   return;
 }
-void eval(char *cmd){
+void eval(char *cmd){//根据不同的命令行执行不同的操作
   int argc;
   char *argv[MAXARG];
   parse(cmd,&argc,argv);
